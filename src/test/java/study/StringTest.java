@@ -1,8 +1,15 @@
 package study;
 
+import baseball.InputHandler;
+import baseball.ValidationUtils;
 import org.junit.jupiter.api.Test;
 
+import java.io.Console;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class StringTest {
 
@@ -46,5 +53,52 @@ public class StringTest {
                 .isInstanceOf(StringIndexOutOfBoundsException.class)
                 .hasMessageContaining("String index out of range: 5");
     }
+
+    @Test
+    void Input이_잘_들어왔는지_확인() {
+        Console consoleMock = mock(Console.class);
+
+        when(consoleMock.readLine()).thenReturn("123");
+
+        InputHandler inputHandler = new InputHandler();
+
+        List<Integer> integerInputList = inputHandler.getIntegerInputList(3);
+        assertThat(integerInputList).containsExactly(1, 2, 3);
+
+    }
+
+    @Test
+    void 잘못된_입력이_들어오면_예외() {
+        Console consoleMock = mock(Console.class);
+        InputHandler inputHandler = new InputHandler();
+
+        when(consoleMock.readLine()).thenReturn("1b3");
+        assertThatThrownBy(() -> ValidationUtils.validateNumericInput("012", 3))
+                .isInstanceOf(IllegalArgumentException.class);
+
+//        when(consoleMock.readLine()).thenReturn("130");
+//        assertThatThrownBy(() -> inputHandler.getIntegerInputList(3))
+//                .isInstanceOf(IllegalArgumentException.class);
+
+
+    }
+
+    @Test
+    void 플래그에_잘못된_입력이_들어오면_예외() {
+        Console consoleMock = mock(Console.class);
+
+        when(consoleMock.readLine()).thenReturn("1b3");
+        assertThatThrownBy(() -> ValidationUtils.validateFlagInput("3"))
+                .isInstanceOf(IllegalArgumentException.class);
+
+//        when(consoleMock.readLine()).thenReturn("3");
+//        assertThatThrownBy(() -> inputHandler.getFlagInput())
+//                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+
+
+
+
 
 }
